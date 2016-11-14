@@ -1,12 +1,20 @@
 {
   "name": "kafka-rxjs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": {
+    "name": "Philip Prophet",
+    "email": "philip.prophet@gmail.com",
+    "url": "https://github.com/monkybrain"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/monkybrain/kafka-rxjs"
+  },
   "license": "ISC",
   "dependencies": {
     "is-json": "^2.0.1",

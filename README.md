@@ -36,12 +36,13 @@ kRx.consume({
 });
 
 // e.g. output:
-	{
-	  topic: 'topic1',
-	  key: 'abc123',
-	  offset: 0,
-	  value: {					# Will parse to object if valid JSON string
-	    a: 'test'
-	    b: 0
-	  }
+{
+  topic: 'topic1',
+  key: 'abc123',
+  offset: 0,
+  value: {					# Will parse if valid JSON string
+    a: 'test'
+    b: 0
+  }
+}
 ```
