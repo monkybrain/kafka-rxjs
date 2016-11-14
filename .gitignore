@@ -1,2 +1,4 @@
 node_modules/
+tests/
 coffee-compile.cson
+npm-debug.log
