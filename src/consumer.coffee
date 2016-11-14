@@ -37,8 +37,11 @@ exports.consume = (options) ->
     # Register consumer
     client = new kafka.Client options.connectionString || 'localhost:2181'
     topics = makeTopicArray options.topics
-    options = groupId: options.groupId || 'kafka-rxjs'
-    consumer = new kafka.HighLevelConsumer client, topics, options
+    kafkaNodeTopics = R.clone topics
+    kafkaNodeOptions =
+      groupId: options.groupId || 'kafka-rxjs'
+      autoCommit: true
+    consumer = new kafka.HighLevelConsumer client, kafkaNodeTopics, kafkaNodeOptions
 
     # Push consumer to consumer array
     consumers.push consumer
@@ -57,8 +60,9 @@ exitGracefully = (signal) ->
   process.on signal, ->
     close = (consumer) ->
       new Promise (resolve, reject) ->
-        consumer.close true, ->
-          resolve()
+        consumer.commit (err, data) ->
+          consumer.close true, ->
+            resolve()
 
     Promise.all R.map(close, consumers)
     .then -> process.exit()

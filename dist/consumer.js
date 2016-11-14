@@ -55,13 +55,15 @@ consumers = [];
 
 exports.consume = function(options) {
   return Rx.Observable.create(function(observer) {
-    var client, consumer, topics;
+    var client, consumer, kafkaNodeOptions, kafkaNodeTopics, topics;
     client = new kafka.Client(options.connectionString || 'localhost:2181');
     topics = makeTopicArray(options.topics);
-    options = {
-      groupId: options.groupId || 'kafka-rxjs'
+    kafkaNodeTopics = R.clone(topics);
+    kafkaNodeOptions = {
+      groupId: options.groupId || 'kafka-rxjs',
+      autoCommit: true
     };
-    consumer = new kafka.HighLevelConsumer(client, topics, options);
+    consumer = new kafka.HighLevelConsumer(client, kafkaNodeTopics, kafkaNodeOptions);
     consumers.push(consumer);
     consumer.on('registered', function() {
       return consumer.once('done', function() {
@@ -79,8 +81,10 @@ exitGracefully = function(signal) {
     var close;
     close = function(consumer) {
       return new Promise(function(resolve, reject) {
-        return consumer.close(true, function() {
-          return resolve();
+        return consumer.commit(function(err, data) {
+          return consumer.close(true, function() {
+            return resolve();
+          });
         });
       });
     };
