@@ -1,4 +1,4 @@
-var Promise, R, Rx, consumers, isJSON, kafka, makeTopicArray, parseMessage, setOffsets;
+var Promise, R, Rx, consumers, exitGracefully, isJSON, kafka, makeTopicArray, parseMessage, setOffsets, signals;
 
 Rx = require('rxjs');
 
@@ -74,16 +74,22 @@ exports.consume = function(options) {
   });
 };
 
-process.on('SIGINT', function() {
-  var close;
-  close = function(consumer) {
-    return new Promise(function(resolve, reject) {
-      return consumer.close(true, function() {
-        return resolve();
+exitGracefully = function(signal) {
+  return process.on(signal, function() {
+    var close;
+    close = function(consumer) {
+      return new Promise(function(resolve, reject) {
+        return consumer.close(true, function() {
+          return resolve();
+        });
       });
+    };
+    return Promise.all(R.map(close, consumers)).then(function() {
+      return process.exit();
     });
-  };
-  return Promise.all(R.map(close, consumers)).then(function() {
-    return process.exit();
   });
-});
+};
+
+signals = ['SIGINT', 'SIGTERM'];
+
+R.forEach(exitGracefully, signals);

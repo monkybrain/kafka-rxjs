@@ -43,21 +43,25 @@ exports.consume = (options) ->
     # Push consumer to consumer array
     consumers.push consumer
 
-    # On 'registered' ->
+    # On 'registered' -> set offsets
     consumer.on 'registered', ->
       consumer.once 'done', ->
         setOffsets(consumer, topics)
 
+    # On 'message' -> push to stream
     consumer.on 'message', (message) ->
       observer.next parseMessage(message)
 
-# Exit gracefully on KILL signal
-process.on 'SIGINT', ->
+# Exit gracefully on KILL signals
+exitGracefully = (signal) ->
+  process.on signal, ->
+    close = (consumer) ->
+      new Promise (resolve, reject) ->
+        consumer.close true, ->
+          resolve()
 
-  close = (consumer) ->
-    new Promise (resolve, reject) ->
-      consumer.close true, ->
-        resolve()
+    Promise.all R.map(close, consumers)
+    .then -> process.exit()
 
-  Promise.all R.map(close, consumers)
-  .then -> process.exit()
+signals = ['SIGINT', 'SIGTERM']
+R.forEach exitGracefully, signals
