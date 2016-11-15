@@ -1,6 +1,5 @@
 Rx = require 'rxjs'
 R = require 'ramda'
-Promise = require 'promise'
 isJSON = require 'is-json'
 kafka = require 'kafka-node'
 

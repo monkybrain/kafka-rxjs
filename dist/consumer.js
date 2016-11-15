@@ -1,10 +1,8 @@
-var Promise, R, Rx, consumers, exitGracefully, isJSON, kafka, makeTopicArray, parseMessage, setOffsets, signals;
+var R, Rx, consumers, exitGracefully, isJSON, kafka, makeTopicArray, parseMessage, setOffsets, signals;
 
 Rx = require('rxjs');
 
 R = require('ramda');
-
-Promise = require('promise');
 
 isJSON = require('is-json');
 

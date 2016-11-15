@@ -20,8 +20,16 @@ to prevent [kafka-node](https://github.com/SOHU-Co/kafka-node) from building [sn
 
 ### Usage
 
+### consume(options)
+
+Returns observable with consumed messages
+
+Options:
+
+
+
 ```
-kRx = require 'kafka-rxjs'
+var kRx = require('kafka-rxjs');
 
 kRx.consume({
   connectionString: 'localhost:2181'	# Zookeeper connection string (default: 'localhost:2181')
